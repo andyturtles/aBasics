@@ -2,6 +2,9 @@
 
 namespace aBasics {
 
+    /// <summary>
+    /// Tools Klasse, für weiterführende Libs
+    /// </summary>
     public class BasicTools {
 
         /// <summary>
@@ -22,8 +25,8 @@ namespace aBasics {
             return original;
         }
 
-
         #region File use Date
+
         /// <summary>
         /// Liefert einen String der das Datum enthält im Format YYYY*MM*TT
         /// Basis ist DateTime.Now
@@ -112,7 +115,6 @@ namespace aBasics {
             }
         }
 
-        #endregion
-
+        #endregion File use Date
     }
 }
