@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace aBasics {
 
@@ -15,14 +16,29 @@ namespace aBasics {
         /// <param name="stringToReplace">The string to replace.</param>
         /// <returns>Text mit Ersetzungen</returns>
         public static string ReplaceTextFirstOccurrence(string original, string replace, string stringToReplace) {
-            int i = original.IndexOf(stringToReplace);
+            int i = original.IndexOf(stringToReplace, StringComparison.Ordinal);
             if ( i >= 0 ) {
                 string sub1 = original.Substring(0, i + stringToReplace.Length);
-                string sub2 = original.Substring(i + stringToReplace.Length);
-                sub1        = sub1.Replace(stringToReplace, replace);
+                string sub2 = original.Substring(i    + stringToReplace.Length);
+                sub1 = sub1.Replace(stringToReplace, replace);
                 return sub1 + sub2;
             }
+
             return original;
+        }
+
+        /// <summary>
+        /// Splits the console arguments.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Dictionary key=val</returns>
+        public static Dictionary<string, string> SplitConsoleArgs(string[] args) {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach ( string part in args ) {
+                string[] spl = part.Split('=');
+                dict.Add(spl[0], spl[1]);
+            }
+            return dict;
         }
 
         #region File use Date
@@ -70,17 +86,18 @@ namespace aBasics {
         /// <param name="alsoTime">auch Zeit einbinden</param>
         /// <returns>sting</returns>
         public static string GetFilenameUsableDate(DateTime dateTime, string trennZeichenDatum, string trennZeichenZeit, bool alsoTime) {
-            string s    = "";
-            s           += dateTime.Year.ToString()                   + trennZeichenDatum;
-            s           += dateTime.Month.ToString().PadLeft(2, '0')  + trennZeichenDatum;
-            s           += dateTime.Day.ToString().PadLeft(2, '0');
+            string s = "";
+            s += dateTime.Year                             + trennZeichenDatum;
+            s += dateTime.Month.ToString().PadLeft(2, '0') + trennZeichenDatum;
+            s += dateTime.Day.ToString().PadLeft(2, '0');
 
             if ( alsoTime ) {
-                s       += "_";
-                s       += dateTime.Hour.ToString().PadLeft(2, '0') + trennZeichenZeit;
-                s       += dateTime.Minute.ToString().PadLeft(2, '0') + trennZeichenZeit;
-                s       += dateTime.Second.ToString().PadLeft(2, '0');
+                s += "_";
+                s += dateTime.Hour.ToString().PadLeft(2, '0')   + trennZeichenZeit;
+                s += dateTime.Minute.ToString().PadLeft(2, '0') + trennZeichenZeit;
+                s += dateTime.Second.ToString().PadLeft(2, '0');
             }
+
             return s;
         }
 
@@ -93,28 +110,27 @@ namespace aBasics {
         /// <param name="alsoTime">if set to <c>true</c> [also time].</param>
         /// <returns>DateTime</returns>
         public static DateTime ParseFilenameUsableDate(string input, string trennZeichenDatum = "", string trennZeichenZeit = "", bool alsoTime = false) {
-            string s = input;
-            if ( !String.IsNullOrEmpty(trennZeichenDatum) ) s   = s.Replace(trennZeichenDatum, "");
-            if ( !String.IsNullOrEmpty(trennZeichenZeit) ) s    = s.Replace(trennZeichenZeit, "");
-            s                                                   = s.Replace("_", "");
+            string s                                          = input;
+            if ( !String.IsNullOrEmpty(trennZeichenDatum) ) s = s.Replace(trennZeichenDatum, "");
+            if ( !String.IsNullOrEmpty(trennZeichenZeit) ) s  = s.Replace(trennZeichenZeit, "");
+            s = s.Replace("_", "");
 
-            int jahr, monat, tag;
-            jahr    = Int32.Parse(s.Substring(0, 4));
-            monat   = Int32.Parse(s.Substring(4, 2));
-            tag     = Int32.Parse(s.Substring(6, 2));
+            int jahr  = Int32.Parse(s.Substring(0, 4));
+            int monat = Int32.Parse(s.Substring(4, 2));
+            int tag   = Int32.Parse(s.Substring(6, 2));
 
             if ( alsoTime ) {
-                int stunde, minute, sekunde;
-                stunde  = Int32.Parse(s.Substring(8, 2));
-                minute  = Int32.Parse(s.Substring(10, 2));
-                sekunde = Int32.Parse(s.Substring(12, 2));
+                int stunde  = Int32.Parse(s.Substring(8, 2));
+                int minute  = Int32.Parse(s.Substring(10, 2));
+                int sekunde = Int32.Parse(s.Substring(12, 2));
                 return new DateTime(jahr, monat, tag, stunde, minute, sekunde);
             }
-            else {
-                return new DateTime(jahr, monat, tag);
-            }
+
+            return new DateTime(jahr, monat, tag);
         }
 
         #endregion File use Date
+
     }
+
 }
